@@ -1,0 +1,78 @@
+
+*{
+  margin: 0;
+  padding: 0;
+  outline: none;
+  text-decoration: none;
+  box-sizing: border-box;
+  border-collapse: collapse;
+}
+	@import url('https://fonts.googleapis.com/css?family=Pacifico|Pattaya&display=swap&subset=cyrillic,cyrillic-ext');
+body {
+	background-color:#2d2b2b08;;
+}
+
+.title{
+	 display: flex;
+  justify-content: center;
+  padding-top:25px;
+}
+.container {
+ display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  padding: 10px 10px;
+}
+.box {
+	display:flex;
+	flex-direction:column;
+	justify-content:flex-start;
+	align-items:center;
+	padding-top:48px;
+}
+.noteInput {
+width: 400px;
+height:48px;
+padding-left:12px;
+padding-right:12px;
+margin-right: 24px;
+font-size: 18px;
+
+}
+.addNote,
+.toggleDone{
+height:48px;
+font-size: 18px;
+}
+
+.noteList {
+	width:555px;
+	padding-left:0;
+	margin-top:24px;
+	margin-bottom:0;
+	list-style:none;
+}
+.noteList.hideDone .done{
+	display:none;
+}
+.noteItem {
+	display:flex;
+	align-items: flex-start;
+	align-items: center;
+}
+.noteItem.done{
+	background: lightgray;
+}
+
+.noteItem:not(:last-child){
+	margin-bottom: 12px;
+}
+.noteItem span {
+	margin-right:24px;
+	flex-grow:1;
+}
+.noteItem.done span {
+	text-decoration: line-through;
+}
+

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <title>TO DO LIST</title>
+</head>
+
+<body>
+    <section>
+        <container>
+            <div class="title">
+                <h1>ToDo List</h1>
+            </div>
+            <div class="box">
+                <form>
+                    <input type="text" class="noteInput">
+                    <button class="addNote">Add new Note</button>
+                    <button type="button" class="toggleDone">Hide Done</button>
+                </form>
+                <ul class="noteList"> </ul>
+            </div>
+
+        </container>
+    </section>
+    <script>
+
+        const LIST_NAME = 'todoList';
+        const lsData = localStorage.getItem(LIST_NAME);
+        let notes = lsData ? JSON.parse(lsData).notes : [];
+        let isShow = lsData ? JSON.parse(lsData).isShow : false;
+        const form = document.querySelector('form');
+        const list = document.querySelector('.noteList');
+        const noteTemplate = ({ id, isDone, text }) => `
+        <li data-id ="${id}" class ="noteItem${isDone ? 'done' : ''}">
+            <span>${text}</span>
+            <div>
+                <input type="checkbox" ${isDone ? 'checked' : ''}>
+                <button>Edit</button>
+                <button>Delete</button>
+            </div>
+        </li>`;
+
+
+        notes.forEach(note => {
+            list.innerHTML += noteTemplate(note);
+        });
+
+        const saveToLs = (data, isShow) => localStorage.setItem(LIST_NAME, JSON.stringify({
+            notes: data,
+            isShow
+        }));
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            const input = e.target.children[0];
+            indexElement = notes.findIndex(function (note, index) {
+                return note.text === input.value;
+            });
+            if (indexElement === -1) {
+                const note = {
+                    isDone: false,
+                    text: input.value,
+                    id: Math.random().toString(36).substr(2, 10),
+                }
+                list.innerHTML += noteTemplate(note);
+                notes.push(note);
+                saveToLs(notes, isShow);
+                input.value = '';
+            } else { alert('this task is already exist'); }
+
+
+
+        });
+
+        list.addEventListener('click', e => {
+            const targetEl = e.target;
+            const li = targetEl.closest('.noteItem');
+            const elId = li.dataset.id;
+            if (targetEl.nodeName === 'INPUT') {
+                const index = notes.findIndex(note => note.id === elId);
+                notes[index].isDone = !notes[index].isDone
+                saveToLs(notes, isShow);
+                li.classList.toggle('done');
+            }
+            // else if (targetEl.nodeName === 'BUTTON') {
+            //     const index = notes.findIndex(note => note.Id === elId);
+            //     if (index !== -1) {
+            //         Object.assign(this.notes[index], { text: input.value })
+            //     };
+            //     saveToLs(notes, isShow);
+            else if (targetEl.nodeName === 'BUTTON') {
+                const index = notes.findIndex(note => note.Id === elId);
+                notes.splice(index, 1);
+                saveToLs(notes, isShow);
+                const askRemove = confirm('do you want to delete?');
+                if (askRemove == true) {
+                    li.remove();
+                }
+            }
+        });
+
+        const hideButton = document.querySelector('.toggleDone');
+        hideButton.addEventListener('click', e => {
+            if (e.target.innerText === 'Hide done') {
+                e.target.innerText = 'Show done';
+                isShow = true;
+            } else {
+                e.target.innerText = 'Hide done'
+                isShow = false;
+            };
+            saveToLS(notes, isShow);
+
+            const list = document.querySelector('.noteList');
+            list.classList.toggle('hideDone');
+        });
+
+
+
+        // const input = document.querySelector('.noteInput');
+        // const button = document.querySelector('.addNote');
+        // const submitHandler = () => {
+        //     const inputValue = input.value;
+        //     input.value = '';
+        //     console.log(inputValue);
+        // };
+        // button.addEventListener('click', submitHandler);
+
+        // input.addEventListener('keypress', e => {
+        //     if (e.keyCode === 13) {
+        //         submitHandler();
+        //     }
+        // });
+    </script>
+
+</body>
+
+</html>
