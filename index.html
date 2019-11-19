@@ -37,8 +37,8 @@
             <span>${text}</span>
             <div>
                 <input type="checkbox" ${isDone ? 'checked' : ''}>
-                <button>Edit</button>
-                <button>Delete</button>
+                <button class = "editButton">Edit</button>
+                <button class ="deleteButton">Delete</button>
             </div>
         </li>`;
 
@@ -84,13 +84,20 @@
                 saveToLs(notes, isShow);
                 li.classList.toggle('done');
             }
-            // else if (targetEl.nodeName === 'BUTTON') {
-            //     const index = notes.findIndex(note => note.Id === elId);
-            //     if (index !== -1) {
-            //         Object.assign(this.notes[index], { text: input.value })
-            //     };
-            //     saveToLs(notes, isShow);
-            else if (targetEl.nodeName === 'BUTTON') {
+            else if (event.target.className === 'editButton') {
+                let newText = prompt('Please, edit your note', 'note');
+                index = notes.findIndex(note => note.id === elId);
+                if (index !== -1) {
+                    Object.assign(notes[index], { text: newText })
+                    saveToLs(notes, isShow)
+                    const askEdit = confirm('do you want to save edition?');
+                    if (askEdit == true) {
+                        saveToLs(notes, isShow);
+                    }
+                } else {
+                    alert('This note has already exist')
+                };
+            } else if (event.target.className === 'deleteButton') {
                 const index = notes.findIndex(note => note.Id === elId);
                 notes.splice(index, 1);
                 saveToLs(notes, isShow);
