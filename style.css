@@ -9,27 +9,46 @@
 }
 	@import url('https://fonts.googleapis.com/css?family=Pacifico|Pattaya&display=swap&subset=cyrillic,cyrillic-ext');
 body {
-	background-color:#2d2b2b08;;
+	background-color:#3a527ac2;
+}
+section {
+	 margin-top: 55px;
+	 display: flex;
+}
+	
+.title{
+	display: flex;
+ 	justify-content: center;
+	padding-top:10px;
+	color: #99efe3;
+	font-size: 30px;
+    text-shadow: 1px 1px 1px;
 }
 
-.title{
-	 display: flex;
-  justify-content: center;
-  padding-top:25px;
-}
-.container {
+container {
  display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
-  padding: 10px 10px;
-}
+  max-width: 1024px;
+  min-height: 400px;
+  margin: 0 auto;
+ padding: 25px 10px; 
+  border-radius: 10px;
+background: #373B44;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to top, #4286f4, #373B44);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to top, #4286f4, #373B44); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+
+  }
+
 .box {
 	display:flex;
 	flex-direction:column;
 	justify-content:flex-start;
 	align-items:center;
-	padding-top:48px;
+	padding: 48px 50px 48px;
+		
 }
 .noteInput {
 width: 400px;
@@ -38,31 +57,48 @@ padding-left:12px;
 padding-right:12px;
 margin-right: 24px;
 font-size: 18px;
+border-radius: 5px;
 
 }
 .addNote,
 .toggleDone{
 height:48px;
-font-size: 18px;
+color: #99efe3;
+text-shadow: 0.5px 0.5px 0.5px;
+padding-left: 5px;
+padding-right: 5px;
+background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#4A2D70), to(#291742));
+border: 1px #291742 solid;
+cursor: pointer;
+font-size: 20px;
+border-radius: 5px;
 }
 
 .noteList {
-	width:555px;
+	width:100%;
 	padding-left:0;
 	margin-top:24px;
 	margin-bottom:0;
 	list-style:none;
+
 }
 .noteList.hideDone .done{
 	display:none;
 }
 .noteItem {
 	display:flex;
-	align-items: flex-start;
 	align-items: center;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: 10px 0px;
+    background-color: #384357ab;
+    padding: 5px;
+    border-radius: 5px;
+    transition: 1s;
 }
 .noteItem.done{
-	background: lightgray;
+	background: #7a919e;
 }
 
 .noteItem:not(:last-child){
@@ -71,8 +107,26 @@ font-size: 18px;
 .noteItem span {
 	margin-right:24px;
 	flex-grow:1;
-}
-.noteItem.done span {
-	text-decoration: line-through;
+	color: white;
+	width: calc(100% - 80px);
+	font-weight: 600;
+    font-size: 18px;
 }
 
+.noteItem.done span {
+	text-decoration: line-through;
+	}
+.form{
+position: absolute;
+    bottom: 20px;
+    display: flex;
+	justify-content: center;
+	
+	}
+.buttons {
+	margin:0 auto;
+	width: 80px;
+	}
+.buttons i{
+	font-size:22px;
+}

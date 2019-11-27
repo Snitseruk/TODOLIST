@@ -16,7 +16,7 @@
             <div class="box">
                 <form>
                     <input type="text" class="noteInput">
-                    <button class="addNote">Add new Note</button>
+                    <button class="addNote">Add new</button>
                     <button type="button" class="toggleDone">Hide Done</button>
                 </form>
                 <ul class="noteList"> </ul>
@@ -24,54 +24,51 @@
 
         </container>
     </section>
+    <script src="https://kit.fontawesome.com/1da09caea0.js" crossorigin="anonymous"></script>
     <script>
-
         const LIST_NAME = 'todoList';
         const lsData = localStorage.getItem(LIST_NAME);
-        let notes = lsData ? JSON.parse(lsData).notes : [];
-        let isShow = lsData ? JSON.parse(lsData).isShow : false;
+        const todo = {
+            notes: lsData ? JSON.parse(lsData).notes : [],
+            isShowDone: lsData ? JSON.parse(lsData).isShowDone : true,
+        };
         const form = document.querySelector('form');
         const list = document.querySelector('.noteList');
-        const noteTemplate = ({ id, isDone, text }) => `
-        <li data-id ="${id}" class ="noteItem${isDone ? 'done' : ''}">
+
+        const tasksInPro = document.querySelector('.tasksInPro');
+        const noteTemplate = ({ id, isShowDone, text }) => `
+        <li data-id ="${id}" class ="noteItem${isShowDone ? 'done' : ''}">
             <span>${text}</span>
-            <div>
-                <input type="checkbox" ${isDone ? 'checked' : ''}>
-                <button class = "editButton">Edit</button>
-                <button class ="deleteButton">Delete</button>
+            <div class= "buttons">
+                <input type="checkbox" ${isShowDone ? 'checked' : ''}>
+                <button class = "editButton"><i class="far fa-edit"></i></button>
+                <button class ="deleteButton"><i class="far fa-trash-alt"></i></button>
             </div>
         </li>`;
 
-
-        notes.forEach(note => {
+        todo.notes.forEach(note => {
             list.innerHTML += noteTemplate(note);
         });
 
-        const saveToLs = (data, isShow) => localStorage.setItem(LIST_NAME, JSON.stringify({
-            notes: data,
-            isShow
-        }));
+        const saveToLs = todo => localStorage.setItem(LIST_NAME, JSON.stringify(todo));
 
         form.addEventListener('submit', e => {
             e.preventDefault();
             const input = e.target.children[0];
-            indexElement = notes.findIndex(function (note, index) {
+            indexElement = todo.notes.findIndex(function (note, index) {
                 return note.text === input.value;
             });
             if (indexElement === -1) {
                 const note = {
-                    isDone: false,
+                    isShowDone: false,
                     text: input.value,
                     id: Math.random().toString(36).substr(2, 10),
                 }
                 list.innerHTML += noteTemplate(note);
-                notes.push(note);
-                saveToLs(notes, isShow);
+                todo.notes.push(note);
+                saveToLs(todo);
                 input.value = '';
             } else { alert('this task is already exist'); }
-
-
-
         });
 
         list.addEventListener('click', e => {
@@ -79,28 +76,29 @@
             const li = targetEl.closest('.noteItem');
             const elId = li.dataset.id;
             if (targetEl.nodeName === 'INPUT') {
-                const index = notes.findIndex(note => note.id === elId);
-                notes[index].isDone = !notes[index].isDone
-                saveToLs(notes, isShow);
+                const index = todo.notes.findIndex(note => note.id === elId);
+                todo.notes[index].isShowDone = !todo.notes[index].isShowDone;
+                saveToLs(todo);
                 li.classList.toggle('done');
             }
-            else if (event.target.className === 'editButton') {
+            else if (targetEl.className === 'editButton') {
                 let newText = prompt('Please, edit your note', 'note');
-                index = notes.findIndex(note => note.id === elId);
+                const index = todo.notes.findIndex(note => note.id === elId);
                 if (index !== -1) {
-                    Object.assign(notes[index], { text: newText })
-                    saveToLs(notes, isShow)
+                    Object.assign(todo.notes[index], { text: newText })
+                    saveToLs(todo)
                     const askEdit = confirm('do you want to save edition?');
                     if (askEdit == true) {
-                        saveToLs(notes, isShow);
+                        saveToLs(todo);
                     }
                 } else {
                     alert('This note has already exist')
                 };
-            } else if (event.target.className === 'deleteButton') {
-                const index = notes.findIndex(note => note.Id === elId);
-                notes.splice(index, 1);
-                saveToLs(notes, isShow);
+            }
+            else if (targetEl.className === 'deleteButton') {
+                const index = todo.notes.findIndex(note => note.Id === elId);
+                todo.notes.splice(index, 1);
+                saveToLs(todo);
                 const askRemove = confirm('do you want to delete?');
                 if (askRemove == true) {
                     li.remove();
@@ -112,33 +110,16 @@
         hideButton.addEventListener('click', e => {
             if (e.target.innerText === 'Hide done') {
                 e.target.innerText = 'Show done';
-                isShow = true;
             } else {
                 e.target.innerText = 'Hide done'
-                isShow = false;
             };
-            saveToLS(notes, isShow);
-
             const list = document.querySelector('.noteList');
             list.classList.toggle('hideDone');
         });
 
 
 
-        // const input = document.querySelector('.noteInput');
-        // const button = document.querySelector('.addNote');
-        // const submitHandler = () => {
-        //     const inputValue = input.value;
-        //     input.value = '';
-        //     console.log(inputValue);
-        // };
-        // button.addEventListener('click', submitHandler);
 
-        // input.addEventListener('keypress', e => {
-        //     if (e.keyCode === 13) {
-        //         submitHandler();
-        //     }
-        // });
     </script>
 
 </body>
