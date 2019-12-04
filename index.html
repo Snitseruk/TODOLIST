@@ -41,11 +41,8 @@
             list.innerHTML += notesTemplate(note);
         });
 
-        hideButton.innerText = todo.isShowDone ? 'Hide done' : 'Show done';
-        !todo.isShowDone && list.classList.add('hideDone');
-
         function notesTemplate({ text, isDone, id }) {
-            const res = `
+            const result = `
                 <li data-id="${id}" class="noteItem${isDone ? ' done' : ''}">
                     <span>${text}</span>
                    <div class="buttons">
@@ -55,7 +52,7 @@
         </div>
                 </li>
         `;
-            return res
+            return result
         };
 
 
