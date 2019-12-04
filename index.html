@@ -19,106 +19,119 @@
                     <button class="addNote">Add new</button>
                     <button type="button" class="toggleDone">Hide Done</button>
                 </form>
-                <ul class="noteList"> </ul>
+                <ul class="noteList"></ul>
             </div>
 
         </container>
     </section>
-    <script src="https://kit.fontawesome.com/1da09caea0.js" crossorigin="anonymous"></script>
+
     <script>
-        const LIST_NAME = 'todoList';
-        const lsData = localStorage.getItem(LIST_NAME);
+
+        const lsData = localStorage.getItem('todo');
         const todo = {
             notes: lsData ? JSON.parse(lsData).notes : [],
-            isShowDone: lsData ? JSON.parse(lsData).isShowDone : true,
+            isShowDone: lsData ? JSON.parse(lsData).isShowDone : true
         };
         const form = document.querySelector('form');
         const list = document.querySelector('.noteList');
-
-        const tasksInPro = document.querySelector('.tasksInPro');
-        const noteTemplate = ({ id, isShowDone, text }) => `
-        <li data-id ="${id}" class ="noteItem${isShowDone ? 'done' : ''}">
-            <span>${text}</span>
-            <div class= "buttons">
-                <input type="checkbox" ${isShowDone ? 'checked' : ''}>
-                <button class = "editButton"><i class="far fa-edit"></i></button>
-                <button class ="deleteButton"><i class="far fa-trash-alt"></i></button>
-            </div>
-        </li>`;
+        const hideButton = document.querySelector('.toggleDone');
+        form.children[0].focus();
 
         todo.notes.forEach(note => {
-            list.innerHTML += noteTemplate(note);
+            list.innerHTML += notesTemplate(note);
         });
 
-        const saveToLs = todo => localStorage.setItem(LIST_NAME, JSON.stringify(todo));
+        hideButton.innerText = todo.isShowDone ? 'Hide done' : 'Show done';
+        !todo.isShowDone && list.classList.add('hideDone');
+
+        function notesTemplate({ text, isDone, id }) {
+            const res = `
+                <li data-id="${id}" class="noteItem${isDone ? ' done' : ''}">
+                    <span>${text}</span>
+                   <div class="buttons">
+            <input type="checkbox" ${isDone ? 'checked' : ''}>
+            <button class="editButton"> Edit </button>
+            <button class="deleteButton"> Delete </i></button>
+        </div>
+                </li>
+        `;
+            return res
+        };
+
+
+        function saveToLS(key = 'todo', data = todo) {
+            localStorage.setItem(key, JSON.stringify(data));
+        };
 
         form.addEventListener('submit', e => {
             e.preventDefault();
             const input = e.target.children[0];
-            indexElement = todo.notes.findIndex(function (note, index) {
-                return note.text === input.value;
-            });
-            if (indexElement === -1) {
-                const note = {
-                    isShowDone: false,
-                    text: input.value,
-                    id: Math.random().toString(36).substr(2, 10),
-                }
-                list.innerHTML += noteTemplate(note);
-                todo.notes.push(note);
-                saveToLs(todo);
-                input.value = '';
-            } else { alert('this task is already exist'); }
-        });
+            const note = {
+                text: input.value,
+                isDone: false,
+                id: Math.random().toString(36).substr(2, 10)
+            };
+            const indexElement = todo.notes.findIndex(e => e.text === input.value);
+            if (indexElement !== -1) {
 
+                alert('this task is already exist');
+                return
+            };
+            list.innerHTML += notesTemplate(note);
+            todo.notes.push(note);
+            input.value = '';
+            saveToLS();
+
+        });
         list.addEventListener('click', e => {
             const targetEl = e.target;
             const li = targetEl.closest('.noteItem');
+            const liText = li.children[0].innerText;
             const elId = li.dataset.id;
+            const index = todo.notes.findIndex(note => note.id === elId);
+
             if (targetEl.nodeName === 'INPUT') {
-                const index = todo.notes.findIndex(note => note.id === elId);
-                todo.notes[index].isShowDone = !todo.notes[index].isShowDone;
-                saveToLs(todo);
                 li.classList.toggle('done');
+                todo.notes[index].isDone = !todo.notes[index].isDone;
+                saveToLS();
             }
             else if (targetEl.className === 'editButton') {
                 let newText = prompt('Please, edit your note', 'note');
                 const index = todo.notes.findIndex(note => note.id === elId);
-                if (index !== -1) {
+                if (index === -1) {
                     Object.assign(todo.notes[index], { text: newText })
-                    saveToLs(todo)
+                    saveToLS()
                     const askEdit = confirm('do you want to save edition?');
                     if (askEdit == true) {
-                        saveToLs(todo);
+                        saveToLS();
                     }
                 } else {
                     alert('This note has already exist')
                 };
             }
             else if (targetEl.className === 'deleteButton') {
-                const index = todo.notes.findIndex(note => note.Id === elId);
-                todo.notes.splice(index, 1);
-                saveToLs(todo);
                 const askRemove = confirm('do you want to delete?');
-                if (askRemove == true) {
+                if (askRemove) {
                     li.remove();
-                }
+                    todo.notes.splice(index, 1);
+                    saveToLS();
+                };
             }
         });
 
-        const hideButton = document.querySelector('.toggleDone');
         hideButton.addEventListener('click', e => {
             if (e.target.innerText === 'Hide done') {
                 e.target.innerText = 'Show done';
-            } else {
-                e.target.innerText = 'Hide done'
+                todo.isShowDone = false;
+                saveToLS();
+            } else if (e.target.innerText === 'Show done') {
+                e.target.innerText = 'Hide done';
+                todo.isShowDone = true;
+                saveToLS();
             };
             const list = document.querySelector('.noteList');
             list.classList.toggle('hideDone');
         });
-
-
-
 
     </script>
 
