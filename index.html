@@ -60,6 +60,9 @@
             localStorage.setItem(key, JSON.stringify(data));
         };
 
+        hideButton.innerText = todo.isShowDone ? 'Hide done' : 'Show done';
+        !todo.isShowDone && list.classList.add('hideDone');
+        
         form.addEventListener('submit', e => {
             e.preventDefault();
             const input = e.target.children[0];
@@ -93,18 +96,21 @@
                 saveToLS();
             }
             else if (targetEl.className === 'editButton') {
-                let newText = prompt('Please, edit your note', 'note');
-                const index = todo.notes.findIndex(note => note.id === elId);
-                if (index === -1) {
-                    Object.assign(todo.notes[index], { text: newText })
-                    saveToLS()
-                    const askEdit = confirm('do you want to save edition?');
-                    if (askEdit == true) {
+                const task = li.children[0];
+                result = prompt('Please, edit your note');
+                const indexEl = todo.notes.findIndex(e => e.text === result);
+                if (indexEl === -1) {
+                    const confirmEditing = confirm('Are sure that you want to edit this note?');
+                    if (confirmEditing) {
+                        task.innerText = result;
+                        todo.notes[index].text = result;
                         saveToLS();
                     }
                 } else {
-                    alert('This note has already exist')
-                };
+                    alert('Such note has already exist');
+                    return
+                }
+
             }
             else if (targetEl.className === 'deleteButton') {
                 const askRemove = confirm('do you want to delete?');
@@ -117,6 +123,7 @@
         });
 
         hideButton.addEventListener('click', e => {
+
             if (e.target.innerText === 'Hide done') {
                 e.target.innerText = 'Show done';
                 todo.isShowDone = false;
